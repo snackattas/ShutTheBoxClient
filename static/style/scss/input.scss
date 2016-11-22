@@ -1,0 +1,79 @@
+$font-stack: Ubuntu, sans-serif;
+$d-number-font: 'Old Standard TT', serif;
+$d-width: 72px;
+$d-height: 120px;
+$d-font-size: 20px;
+$d-margin: 6px;
+$d-border-radius: .8em;
+$d-box-shadow1: .15em;
+$d-box-shadow2: .1em;
+$d-color: #A0785A;
+$d-shadow: #836953;
+$d-number-font-size: 36px;
+$rod-width: 1030px;
+body {
+  font: 100% $font-stack;
+}
+
+.domino-container {
+  width: 100%;
+  text-align: center;
+  z-index: 3;
+}
+
+ .domino {
+   display: inline-flex;
+   font-size: $d-font-size;
+   width: $d-width;
+   height: $d-height;
+   margin: $d-margin;
+   position: relative;
+   -webkit-border-radius: $d-border-radius;
+   -moz-border-radius: $d-border-radius;
+   border-radius: $d-border-radius;
+   -moz-box-shadow: $d-box-shadow1 $d-box-shadow1 0 $d-box-shadow2 $d-shadow;
+   -webkit-box-shadow: $d-box-shadow1 $d-box-shadow1 0 $d-box-shadow2 $d-shadow;
+   box-shadow: $d-box-shadow1 $d-box-shadow1 0 $d-box-shadow2 $d-shadow;
+   background-color: $d-color;
+ }
+
+.domino-number {
+  margin: auto;
+  font-size: $d-number-font-size;
+  font-family: $d-number-font;
+  -webkit-transform:scale(1,2.5); /* Safari and Chrome */
+  -moz-transform:scale(1,2.5); /* Firefox */
+  -ms-transform:scale(1,2.5); /* IE 9 */
+  -o-transform:scale(1,2.5); /* Opera */
+  transform:scale(1,2.5);
+}
+
+.margin-left {
+  display: inline-flex;
+  margin-left: 10px;
+}
+
+.rod {
+  width: $rod-width;
+  position: relative;
+  height: .8em;
+  top: -20px;
+  margin: 0 auto;
+  background-color: silver;
+  border-radius: 1em;
+  z-index: -1;
+}
+
+.game_selection {
+  position: relative;
+}
+.vertical_align {
+  vertical-align: middle;
+}
+.buttons_small {
+  -webkit-transform:scale(.7); /* Safari and Chrome */
+  -moz-transform:scale(.7); /* Firefox */
+  -ms-transform:scale(.7); /* IE 9 */
+  -o-transform:scale(.7); /* Opera */
+  transform:scale(.7);
+}

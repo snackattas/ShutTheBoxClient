@@ -1,0 +1,69 @@
+body {
+  font: 100% Ubuntu, sans-serif; }
+
+.domino-container {
+  width: 100%;
+  text-align: center;
+  z-index: 3; }
+
+.domino {
+  display: inline-flex;
+  font-size: 20px;
+  width: 72px;
+  height: 120px;
+  margin: 6px;
+  position: relative;
+  -webkit-border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  border-radius: 0.8em;
+  -moz-box-shadow: 0.15em 0.15em 0 0.1em #836953;
+  -webkit-box-shadow: 0.15em 0.15em 0 0.1em #836953;
+  box-shadow: 0.15em 0.15em 0 0.1em #836953;
+  background-color: #A0785A; }
+
+.domino-number {
+  margin: auto;
+  font-size: 36px;
+  font-family: "Old Standard TT", serif;
+  -webkit-transform: scale(1, 2.5);
+  /* Safari and Chrome */
+  -moz-transform: scale(1, 2.5);
+  /* Firefox */
+  -ms-transform: scale(1, 2.5);
+  /* IE 9 */
+  -o-transform: scale(1, 2.5);
+  /* Opera */
+  transform: scale(1, 2.5); }
+
+.margin-left {
+  display: inline-flex;
+  margin-left: 10px; }
+
+.rod {
+  width: 1030px;
+  position: relative;
+  height: .8em;
+  top: -20px;
+  margin: 0 auto;
+  background-color: silver;
+  border-radius: 1em;
+  z-index: -1; }
+
+.game_selection {
+  position: relative; }
+
+.vertical_align {
+  vertical-align: middle; }
+
+.buttons_small {
+  -webkit-transform: scale(0.7);
+  /* Safari and Chrome */
+  -moz-transform: scale(0.7);
+  /* Firefox */
+  -ms-transform: scale(0.7);
+  /* IE 9 */
+  -o-transform: scale(0.7);
+  /* Opera */
+  transform: scale(0.7); }
+
+/*# sourceMappingURL=output.css.map */

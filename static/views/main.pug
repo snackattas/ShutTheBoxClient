@@ -1,0 +1,88 @@
+doctype
+html
+  head
+    title= title
+    link(rel="stylesheet",href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Ubuntu")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Old+Standard+TT")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css")
+    link(rel="stylesheet", href="../style/css/output.css")
+  body
+    form(action="javascript:void(0)", id="username_form")
+      div(class="ui one column centered grid")
+        div(class="column center aligned")
+          label() You are?
+      div(class="ui one column grid")
+        div(class="column center aligned")
+          div(class="ui input")
+            input(placeholder="Type your nickname...", type="text", name="username_field", id="username_field", maxlength="80")
+          div(class='margin-left')
+            button(class="ui basic button", id="username_button", type="submit") Enter
+    div(class="game_selection", id="game_selection")
+      div(class="ui two column middle aligned very relaxed stackable grid")
+        div(class="ui one column")
+          form(action="javascript:void(0)")
+            div(class="ui one column middle aligned grid")
+              div(class="column center aligned")
+                h2() New Game
+            div(class="ui one column middle aligned grid")
+              div(class="column center aligned")
+                label() Dice Operation
+                div(class="margin-left")
+                  div(class="ui buttons", id="dice_operation")
+                    button(class="ui button active", id="addition_button", data-value="ADDITION") +
+                    button(class="ui button", id="multiplication_button", data-value="MULTIPLICATION") x
+            div(class="ui one column middle aligned grid")
+              div(class="column center aligned")
+                label() Number of tiles
+                div(class="margin-left")
+                  div(class="ui buttons", id="number_of_tiles")
+                    button(class="ui button active", id="nine_button", data-value="NINE") 9
+                    button(class="ui button", id="twelve_button", data-value="TWELVE") 12
+            div(class="ui one column middle aligned grid")
+              div(class="column center aligned")
+                button(class="ui basic button center aligned" id="new_game_button") Play
+        div(class="ui vertical divider open_games") OR
+        div(class="ui one column open_games")
+          form(action="javascript:void(0)")
+            div(class="ui one column center aligned grid")
+              div(class="column center aligned")
+                h2() Continue Game
+            div(class="ui one column center middle aligned grid")
+              div(class="column center middle aligned")
+                input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button")
+                label() &nbsp;&nbsp;&nbsp;Turn:&nbsp;
+                  span(data-turn=5, data-score=10) &nbsp;&nbsp;&nbsp;Score:&nbsp;
+                  div(class="ui buttons buttons_small")
+                    button(class="ui button active", id="addition_button", disabled) +
+                    button(class="ui button", id="multiplication_button", disabled) x
+                  div(class="ui buttons buttons_small")
+                    button(class="ui button active", id="nine_button") 9
+                    button(class="ui button", id="twelve_button") 12
+            div(class="ui one column center middle aligned grid")
+              div(class="column center middle aligned")
+                input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button")
+                label() &nbsp;&nbsp;&nbsp;Turn: 4&nbsp;&nbsp;&nbsp;Score: 45
+                  div(class="ui buttons buttons_small")
+                    button(class="ui button active", id="addition_button") +
+                    button(class="ui button", id="multiplication_button") x
+                  div(class="ui buttons buttons_small")
+                    button(class="ui button active", id="nine_button") 9
+                    button(class="ui button", id="twelve_button") 12
+
+    div(class="domino-container", id="nine_domino_container" style="display: none")
+      each val in [1,2,3,4,5,6,7,8,9,10,11,12]
+        div(class="domino")
+          div(class="domino-number", data-number=val) #{val}
+    div(class="rod")
+    div(class="domino-container", id="twelve_domino_container", style="display: none")
+      each val in [1,2,3,4,5,6,7,8,9]
+        div(class="domino")
+          div(class="domino-number", data-number=val) #{val}
+    div(class="rod")
+    script(type="text/javascript", src="https://code.jquery.com/jquery-3.1.1.min.js")
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.js")
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js")
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js")
+    script(type="text/javascript", src="../js/client.js")
+    script(type="text/javascript", src="https://apis.google.com/js/client.js?onload=init")
