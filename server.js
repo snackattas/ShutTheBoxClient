@@ -19,6 +19,22 @@ app.get('/', function (req, res) {
   res.render('main')
 })
 
+app.get('/continue_game', function (req, res) {
+  var games = req.param("games")
+  app.render("continueGame", {games: games, layout: false}, function(err, html) {
+    var response = {html: html}
+    res.send(response)
+  });
+});
+
+app.get('/new_game', function (req, res) {
+  console.log('in new game')
+  app.render('newGame', {layout: false}, function(err, html) {
+    var response = {html: html}
+    res.send(response)
+  })
+})
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })

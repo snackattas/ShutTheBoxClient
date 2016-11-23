@@ -1,0 +1,28 @@
+extends continueGame.pug
+block continue_game
+div(class="ui one column")
+  form(action="javascript:void(0)")
+    div(class="ui one column center aligned grid")
+      div(class="column center aligned")
+        h2() Continue Game
+    div(class="ui one column center middle aligned grid")
+      div(class="column center middle aligned")
+        input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button")
+        label() &nbsp;&nbsp;&nbsp;Turn:&nbsp;
+          span(data-turn=5, data-score=10) &nbsp;&nbsp;&nbsp;Score:&nbsp;
+          div(class="ui buttons buttons_small")
+            button(class="ui button active", id="addition_button", disabled) +
+            button(class="ui button", id="multiplication_button", disabled) x
+          div(class="ui buttons buttons_small")
+            button(class="ui button active", id="nine_button") 9
+            button(class="ui button", id="twelve_button") 12
+    div(class="ui one column center middle aligned grid")
+      div(class="column center middle aligned")
+        input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button")
+        label() &nbsp;&nbsp;&nbsp;Turn: 4&nbsp;&nbsp;&nbsp;Score: 45
+          div(class="ui buttons buttons_small")
+            button(class="ui button active", id="addition_button") +
+            button(class="ui button", id="multiplication_button") x
+          div(class="ui buttons buttons_small")
+            button(class="ui button active", id="nine_button") 9
+            button(class="ui button", id="twelve_button") 12
