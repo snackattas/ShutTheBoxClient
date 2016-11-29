@@ -1,23 +1,24 @@
-div(class="ui one column top aligned very relaxed stackable grid")
-  div(class="ui one column")
-    form(action="javascript:void(0)")
-      div(class="ui one column middle aligned grid")
-        div(class="column center aligned")
-          h2() New Game
-      div(class="ui one column middle aligned grid")
-        div(class="column center aligned")
-          label() Dice Operation
-          div(class="margin-left")
-            div(class="ui buttons", id="dice_operation")
-              button(class="ui button active", id="addition_button", data-value="ADDITION") +
-              button(class="ui button", id="multiplication_button", data-value="MULTIPLICATION") x
-      div(class="ui one column middle aligned grid")
-        div(class="column center aligned")
-          label() Number of tiles
-          div(class="margin-left")
-            div(class="ui buttons", id="number_of_tiles")
-              button(class="ui button active", id="nine_button", data-value="NINE") 9
-              button(class="ui button", id="twelve_button", data-value="TWELVE") 12
-      div(class="ui one column middle aligned grid")
-        div(class="column center aligned")
-          button(class="ui basic button center aligned" id="new_game_button") Play
+div(class="game_selection", id="game_selection_form", style="display: none;")
+  div(class="ui one column top aligned very relaxed stackable grid")
+    div(class="ui one column")
+      form(action="javascript:void(0)")
+        div(class="ui one column middle aligned grid")
+          div(class="column center aligned")
+            h2() New Game
+        div(class="ui one column middle aligned grid")
+          div(class="column center aligned")
+            label() Dice Operation
+            div(class="margin-left")
+              div(class="ui buttons", id="dice_operation")
+                button(class="ui button active", id="addition_button", data-value="ADDITION") +
+                button(class="ui button", id="multiplication_button", data-value="MULTIPLICATION") x
+        div(class="ui one column middle aligned grid")
+          div(class="column center aligned")
+            label() Number of tiles
+            div(class="margin-left")
+              div(class="ui buttons", id="number_of_tiles")
+                button(class="ui button active", id="nine_button", data-value="NINE") 9
+                button(class="ui button", id="twelve_button", data-value="TWELVE") 12
+        div(class="ui one column middle aligned grid")
+          div(class="column center aligned")
+            button(class="ui button center aligned" id="new_game_button") Play
