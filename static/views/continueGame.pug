@@ -36,9 +36,15 @@ div(class="game_selection", id="game_selection_form", style="display: none;")
                   div(class="ui one column center aligned grid")
                     div(class="column center middle aligned remove_padding")
                       if index == 0
-                        input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button", checked="checked", data-urlsafe_key=game.urlsafe_key, data-number_of_tiles=game.number_of_tiles, data-dice_operation=game.dice_operation, id=index)
+                        if game.number_of_tiles == 9
+                          input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button", checked="checked", data-urlsafe_key=game.urlsafe_key, data-number_of_tiles="NINE", data-dice_operation=game.dice_operation, id=index)
+                        if game.number_of_tiles == 12
+                          input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button", checked="checked", data-urlsafe_key=game.urlsafe_key, data-number_of_tiles="TWELVE", data-dice_operation=game.dice_operation, id=index)
                       else
-                        input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button", data-urlsafe_key=game.urlsafe_key, data-number_of_tiles=game.number_of_tiles, data-dice_operation=game.dice_operation, id=index)
+                        if game.number_of_tiles == 9
+                          input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button", data-urlsafe_key=game.urlsafe_key, data-number_of_tiles="NINE", data-dice_operation=game.dice_operation, id=index)
+                        if game.number_of_tiles == 12
+                          input(name="urlsafe_key", type="radio", class="vertical_align game_radio_button", data-urlsafe_key=game.urlsafe_key, data-number_of_tiles="TWELVE", data-dice_operation=game.dice_operation, id=index)
                       label() &nbsp;&nbsp;&nbsp;Turn:&nbsp;#{game.turns_played}
                         div(class="ui buttons buttons_small")
                           if game.dice_operation == "ADDITION"

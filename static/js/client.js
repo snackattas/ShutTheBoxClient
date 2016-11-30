@@ -20,8 +20,8 @@ var animation  = {
 	},
 	removeComponent: function (component) {
 		$(component).remove()
-		console.log('component gone')
 		this.in_animation = false;
+		$(cacheDOM.$loader).addClass("active")
 	},
 	renderRemoveComponent: function (component) {
 		this.removeAnimationClass(component)
@@ -31,14 +31,13 @@ var animation  = {
 	},
 	renderAddComponent: function (component) {
 		if (this.in_animation) {
-			console.log('in renderaddcomponent')
 			setTimeout(this.renderAddComponent.bind(this), 10, component)
 		} else {
-			console.log('in else block')
 			this.addComponent(component)
 		}
 	},
 	addComponent: function (component) {
+		$(cacheDOM.$loader).removeClass("active")
 		$(component).css("display","")
 		$(component).addClass("animated fadeIn")
 	}
@@ -52,6 +51,7 @@ var cacheDOM = {
 		this.$username_form = this.$body.find("#username_form");
 		this.$game_selection_shell = this.$body.find(".game_selection_shell")
 		this.$gameplay_shell = this.$body.find(".gameplay_shell")
+		this.$loader = this.$body.find(".loader")
 	}
 };
 
@@ -100,14 +100,12 @@ var username = {
 	},
 	createUserPromise: function () {
 		return new Promise(function (resolve, reject) {
-			console.log('in createuserprom')
 			var username_object = {username: this.username};
 			this.callback_resolve = resolve;
 			this.client.shut_the_box.create_user(username_object).execute(this.doesUserExist.bind(this));
 		}.bind(this))
 	},
 	doesUserExist: function (resp) {
-		console.log("inuser exists")
 		if (resp.code === 409) {
 			this.user_exists = true;
 		}
@@ -115,15 +113,12 @@ var username = {
 	},
 	unbindUsernameButtonPromise: function () {
 		return new Promise(function (resolve, reject) {
-			console.log("in button")
 			this.unbindUsernameButton();
 			resolve();
 		}.bind(this));
 	},
 	toGameSelectionPromise: function () {
 		return new Promise(function (resolve, reject) {
-			// game_selection.init()
-			console.log('calling game selection')
 			animation.renderRemoveComponent(this.$username_form)
 			game_selection.init(this.client)
 			resolve()
@@ -219,7 +214,6 @@ var game_selection = {
 		}.bind(this))
 	},
 	appendNewGameFormPromise: function () {
-		console.log("in append new game")
 		return new Promise( function (resolve, reject) {
 			this.ajax_callback = resolve
 			$.ajax({
@@ -251,7 +245,6 @@ var game_selection = {
 	appendContinueGameFormPromise: function () {
 		return new Promise( function (resolve, reject) {
 			var game_selection_object = {games: this.open_games}
-			console.log(game_selection_object)
 			this.ajax_callback = resolve
 			$.ajax({
 				url: "/continue_game",
@@ -266,7 +259,6 @@ var game_selection = {
 	},
 	findGamesPromise: function () {
 		return new Promise(function (resolve, reject) {
-			console.log('in find games promis')
 			var find_games_object = {
 				username:          this.username,
 				games_in_progress: true
@@ -276,11 +268,8 @@ var game_selection = {
 		}.bind(this))
 	},
 	addGames: function (resp) {
-		console.log('in add games')
 		if (!resp.code) {
 			if (resp.games) {
-				console.log('games')
-				console.log(resp.games)
 				this.open_games = new Array()
 				_.each(resp.games, function (game) {
 					this.open_games.push(game)
@@ -290,7 +279,6 @@ var game_selection = {
 		this.callback_resolve()
 	},
 	whichFormRender: function() {
-		console.log('in which form')
 		if (this.open_games) {
 			this.renderContinueGame()
 		} else {
@@ -367,51 +355,52 @@ var game_selection = {
 
 var play  = {
 	init: function (client, urlsafe_key, dice_operation, number_of_tiles) {
+		// initialize passed in variables
 		this.client = client
 		this.urlsafe_key = urlsafe_key
 		this.dice_operation = dice_operation
 		this.number_of_tiles = number_of_tiles
-		console.log('in play')
-		console.log(urlsafe_key)
-		console.log(this.dice_operation)
-		console.log(this.number_of_tiles)
 		this.initVariables()
-		this.initGamePromise()
+		this.gameStatePromise()
 		.then( this.appendTilesPromise.bind(this))
 		.then( function () {
 			this.initTiles()
-			console.log(this.$domino_container)
-			animation.renderAddComponent(this.$domino_container)
-			$(this.$dice_holder).dice();
-			$(this.$dice_holder_2).dice();
+			animation.renderAddComponent(this.$domino_container);
 			this.bindAllTiles();
-			this.continuedGameState()
+			this.setGameState();
+			this.bindRollButton();
 		}.bind(this))
 	},
 	initVariables: function () {
+		this.$gameplay_shell = cacheDOM.$gameplay_shell
 		this.active_tiles = new Array();
 		this.flipped_tiles = new Array();
 		this.temp_active_tiles = new Array();
 		this.temp_flipped_tiles = new Array();
 		this.roll = new Array();
+		this.second_dice_exists = true;
+		this.valid_move = false;
+		this.game_over = false;
 	},
 	initTiles: function () {
-		this.$domino_container = cacheDOM.$gameplay_shell.find("#domino_container")
+		this.$domino_container = this.$gameplay_shell.find("#domino_container")
 		this.$tiles = this.$domino_container.find(".domino")
-		this.$dice_holder = cacheDOM.$gameplay_shell.find(".dice_holder")
-		this.$dice_holder_2 = cacheDOM.$gameplay_shell.find(".dice_holder_2")
-		console.log(this.$dice_holder)
+		this.$dice_holder = this.$domino_container.find(".dice_holder")
+		this.$dice_holder_2 = this.$domino_container.find(".dice_holder_2")
+		this.$roll_button = this.$domino_container.find("#roll_button")
 	},
-	initGamePromise: function () {
+	gameStatePromise: function () {
 		return new Promise(function (resolve, reject) {
-			console.log('in first roll promise')
 			this.callback_resolve = resolve
+			// call turn with only the urlsafe-key.  If it's a new game, it creates
+			// the first roll.  If it's a continued game, it will return the last roll
+			// and the active tiles in play, which we use to establish the continued game
+			// state
 			var turn_object = {urlsafe_key: this.urlsafe_key}
-			this.client.shut_the_box.turn(turn_object).execute(this.setGameState.bind(this))
+			this.client.shut_the_box.turn(turn_object).execute(this.setGameVariables.bind(this))
 		}.bind(this))
 	},
-	setGameState: function (resp) {
-		console.log('in set game state')
+	setGameVariables: function (resp) {
 		if (!resp.code) {
 			this.active_tiles = resp.active_tiles
 			this.roll = resp.roll
@@ -419,19 +408,15 @@ var play  = {
 		this.callback_resolve()
 	},
 	appendTilesPromise: function () {
-		console.log("in append tiles")
-		data_object = {number_of_tiles: this.number_of_tiles, active_tiles: this.active_tiles}
-		console.log(data_object)
+		var data_object = {number_of_tiles: this.number_of_tiles}
 		return new Promise( function (resolve, reject) {
-			console.log('in append tiles promise')
 			this.ajax_callback = resolve
 			$.ajax({
 				url: "/tiles",
 				datatype: 'json',
 				data: data_object,
 				success: function (json) {
-					console.log('finished ajax')
-					cacheDOM.$gameplay_shell.append(json.html)
+					this.$gameplay_shell.append(json.html)
 					this.ajax_callback()
 				}.bind(this)
 			});
@@ -439,23 +424,42 @@ var play  = {
 	},
 	bindAllTiles: function() {
 		_.each(this.$tiles, function (tile) {
-			$($tile).on("click", {tile: tile}, this.tileAction.bind(this))
+			$(tile).on("click", {tile: tile}, this.tileAction.bind(this))
 		}, this)
 	},
-	continuedGameState: function() {
+	setGameState: function() {
 		_.each(this.$tiles, function (tile) {
-			if ($(tile).hasClass("already_flipped")) {
+			var tile_number = this.extractTileNumber(tile)
+			if (!(_.contains(this.active_tiles, tile_number))) {
 				$(tile).click();
-				this.unbindTile(tile)
+				this.flipTile(tile)
 			}
 		}, this)
-		if (play.roll.length == 2) {
-			$(this.dice_holder).dice("roll", play.roll[0])
-			$(this.dice_holder2).dice("roll", play.roll[1])
+		this.startDice(this.$dice_holder, this.roll[0])
+		if (this.roll.length == 2) {
+			this.startDice(this.$dice_holder_2, this.roll[1])
 		} else {
-			$(this.dice_holder).dice("roll", play.roll[0])
-			$(this.dice_holder2).remove()
+			this.removeSecondDice()
 		}
+	},
+	flipTile: function (tile) {
+		$(tile).addClass("flipped").removeClass("temp_flipped")
+		this.unbindTile(tile)
+	},
+	startDice: function (dice, roll) {
+		setTimeout(this.createFirstDice.bind(this), 1000, dice)
+		setTimeout(this.rollFirstDice.bind(this), 1500, dice, roll)
+	},
+	createFirstDice: function (dice) {
+		$(dice).dice().css("display", "none")
+	},
+	rollFirstDice: function(dice,roll) {
+		$(dice).css("display", "")
+		$(dice).dice('roll', roll);
+	},
+	removeSecondDice: function () {
+		$(this.dice_holder_2).remove();
+		this.second_dice_exists = false;
 	},
 	tileAction: function (event) {
 		if ($(event.data.tile).hasClass("temp_flipped")) {
@@ -472,7 +476,107 @@ var play  = {
 			$(event.data.tile).addClass("temp_flipped")
 		}
 	},
+	bindRollButton: function () {
+		this.$roll_button.on("click", this.rollAction.bind(this))
+	},
+	unbindRollButton: function () {
+		this.$roll_button.unbind();
+	},
+	rollAction: function () {
+		this.checkTurn()
+			.then( this.renderTurn.bind(this))
+	},
+	extractTileNumber: function (tile) {
+		return String($(tile).find(".domino_number").data("number"))
+	},
+	renderTurn: function () {
+		if (this.game_over == true) {
+			console.log('game over')
+			this.unbindRollButton();
+			this.unbindTiles();
+			animation.renderRemoveComponent(this.$domino_container)
+		} else {
+			if (this.valid_move) {
+				this.valid_move = false;
+				this.convertTempFlippedTiles();
+				this.rollDice();
+			} else {
+				this.resetTempFlippedTiles();
+				alertify.error('Improper move')
+			}
+		}
+	},
+	resetTempFlippedTiles: function () {
+		_.each(this.$tiles, function (tile) {
+			if ($(tile).hasClass("temp_flipped")) {
+				$(tile).click();
+			}
+		}, this)
+	},
+	rollDice: function () {
+		if (this.roll.length == 2) {
+			this.$dice_holder.dice('roll', this.roll[0])
+			this.$dice_holder_2.dice('roll', this.roll[1])
+		} else {
+			if (this.second_dice_exists) {
+				this.removeSecondDice();
+			}
+			this.$dice_holder.dice('roll', this.roll[0])
+			}
+	},
+	convertTempFlippedTiles: function () {
+		_.each(this.$tiles, function (tile) {
+			if ($(tile).hasClass("temp_flipped")) {
+				this.flipTile(tile)
+			}
+		}, this)
+	},
+	checkTurn: function () {
+		return new Promise( function(resolve, reject) {
+			var flipped_tiles = new Array();
+			_.each(this.$tiles, function (tile) {
+				if ($(tile).hasClass("temp_flipped")) {
+					flipped_tiles.push(this.extractTileNumber(tile))
+				}
+			}, this)
+			if (flipped_tiles.length == 0) {
+				console.log("no tiles")
+				this.valid_move = false;
+				resolve()
+			} else {
+				var turn_object = {
+					urlsafe_key: this.urlsafe_key,
+					flip_tiles: flipped_tiles
+				}
+				this.validate_callback = resolve
+				console.log('about to call turn')
+				this.client.shut_the_box.turn(turn_object).execute(this.setTurnVariables.bind(this))
+			}
+		}.bind(this))
+	},
+	setTurnVariables: function (resp) {
+		if (resp.code === 200) {
+			if (resp) {
+				if (resp.game_over) {
+					this.game_over = true;
+					this.validate_callback()
+				}
+				if (resp.valid_move) {
+					this.roll = resp.roll
+					this.valid_move = true
+				} else {
+					this.valid_move = false
+				}
+			this.validate_callback()
+			}
+		}
+	},
 	unbindTile: function(tile) {
 		$(tile).unbind()
+	},
+	unbindTiles: function () {
+		_.each(this.$tiles, function (tile) {
+			$(tile).unbind();
+		}, this)
 	}
 }

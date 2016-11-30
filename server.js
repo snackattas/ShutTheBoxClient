@@ -38,15 +38,18 @@ app.get('/new_game', function (req, res) {
 app.get('/tiles', function (req, res) {
   console.log('in tiles')
   var number_of_tiles = req.param("number_of_tiles")
-  var active_tiles = req.param("active_tiles")
   if (number_of_tiles == 'NINE') {
-    app.render("9Tiles", {layout: false, active_tiles: active_tiles}, function(err, html) {
+    app.render("9Tiles", {layout: false}, function(err, html) {
+      console.log('in 9')
+      console.log(html)
       var response = {html: html}
       res.send(response)
     });
   }
   if (number_of_tiles == 'TWELVE') {
-    app.render("12Tiles", {layout: false, active_tiles: active_tiles}, function(err, html) {
+    app.render("12Tiles", {layout: false}, function(err, html) {
+      console.log('in 12')
+      console.log(html)
       var response = {html: html}
       res.send(response)
     });

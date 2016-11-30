@@ -2,10 +2,7 @@ div(class="ui one column top aligned very relaxed stackable grid", id="domino_co
   div(class="ui one column center aligned")
     each val in [1,2,3,4,5,6,7,8,9]
       div(class="domino")
-        if val in active_tiles
-          div(class="domino_number", data-number=val) #{val}
-        else
-          div(class="domino_number already_flipped", data-number=val) #{val}
+        div(class="domino_number", data-number=val) #{val}
   div(class="rod")
   div(class="ui one column grid center aligned dice_area")
     div(class="column center aligned")
@@ -13,4 +10,4 @@ div(class="ui one column top aligned very relaxed stackable grid", id="domino_co
       div(class="dice_holder_2")
   div(class="ui one column grid center aligned")
     div(class="column center aligned")
-      button(class="ui button center aligned" id="roll_dice") Roll
+      button(class="ui button center aligned" id="roll_button") Roll

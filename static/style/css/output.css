@@ -71,8 +71,12 @@
 
 body {
   font: 100% Ubuntu, sans-serif;
-  transform: perspective(1000px) rotateX(10deg);
   color: #331a00; }
+
+#tilt {
+  transform: perspective(1000px) rotateX(10deg);
+  height: 100%;
+  width: 100%; }
 
 .background_shut_the_box {
   position: absolute;
@@ -188,13 +192,13 @@ body {
   opacity: 1 !important; }
 
 .header_block {
-  height: 20%;
+  height: 15%;
   width: 100%;
   display: inline-block; }
 
 .text_center {
   text-align: center;
-  padding-top: 20px;
+  padding-top: 40px;
   font-size: 4rem; }
 
 .remove_padding {
@@ -204,10 +208,11 @@ body {
   z-index: 5; }
 
 .dice_area {
-  height: 200px; }
+  height: 200px;
+  margin-top: 100px !important; }
 
 .dice {
-  left: 20px !important;
+  left: 200px !important;
   margin-top: 15px !important; }
 
 /*# sourceMappingURL=output.css.map */
