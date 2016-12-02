@@ -16,6 +16,7 @@
     "jquery.transit": "^0.9.12",
     "promise": "^7.0.4",
     "pug": "^2.0.0-beta6",
+    "socket.io": "^1.7.1",
     "underscore": "^1.8.3",
     "webpack": "^1.13.3"
   },

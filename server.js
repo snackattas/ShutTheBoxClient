@@ -1,4 +1,6 @@
-var express = require('express')
+const express = require('express');
+// const socketIO = require('socket.io');
+const PORT = process.env.PORT || 3000;
 var app = express()
 
 
@@ -43,6 +45,6 @@ app.get('/tiles', function (req, res) {
   });
 })
 
-app.listen(3000, function () {
+app.listen(PORT, function () {
   console.log('Example app listening on port 3000!')
 })
