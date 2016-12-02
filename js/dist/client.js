@@ -65,23 +65,18 @@
 	var Promise = __webpack_require__(7)
 
 	function initWebsite () {
-		console.log('in init website at least')
 		if (typeof window['gapi'] !== 'undefined') {
 				if ((gapi.client) && (gapi.client.shut_the_box)) {
-					console.log('calling username')
 					username.init()
 					return
 				}
 				if ((gapi.client) && (!(gapi.client.shut_the_box))) {
-					console.log('in load')
 					gapi.client.load("shut_the_box", "v1", null, "https://zattas-game.appspot.com/_ah/api")
 					window.setTimeout(initWebsite, 100)
 				} else {
-					console.log('in 1st else loaded yet')
 					window.setTimeout(initWebsite, 100)
 				}
 			} else {
-				console.log('in 2nd else loaded yet')
 				window.setTimeout(initWebsite, 100)
 			}
 	}
@@ -135,18 +130,14 @@
 			return new Promise(function (resolve, reject) {
 				var username_object = {username: username};
 				callback_resolve = resolve;
-				console.log(callback_resolve)
 				gapi.client.shut_the_box.create_user(username_object).execute(doesUserExist);
 			})
 		}
 
 		function doesUserExist (resp) {
-			console.log(resp)
 			if (resp.code === 409) {
 				user_exists = true;
-				console.log('in user exists')
 			}
-			console.log("user doesn't exist?")
 			callback_resolve();
 		}
 
@@ -160,8 +151,6 @@
 		function toGameSelectionPromise () {
 			return new Promise(function (resolve, reject) {
 				animation.animation.renderRemoveComponent($username_form)
-				console.log("in to game selection promise")
-				console.log(user_exists)
 				game_selection.game_selection.init(username, user_exists)
 				resolve()
 			});
@@ -236,8 +225,6 @@
 		function init (passed_in_username, passed_in_user_exists) {
 			resetVars()
 			username = passed_in_username
-			console.log('in game selectinof')
-			console.log(passed_in_user_exists)
 			user_exists = passed_in_user_exists
 			cacheDOM();
 			renderGameSelection()
@@ -271,7 +258,6 @@
 		}
 
 		function renderGameSelection () {
-			console.log(user_exists)
 			if (!user_exists) {
 				renderNewGameForm();
 			} else {
@@ -695,18 +681,15 @@
 		function renderTurn () {
 			if (game_over == true) {
 				rollDice();
-				console.log('game over')
 				unbindRollButton();
 				unbindTiles();
 				newGameOption();
 			} else {
 				if (valid_move) {
-					console.log('valid m ove')
 					valid_move = false;
 					convertTempFlippedTiles();
 					rollDice();
 				} else {
-					console.log('not valid move')
 					resetTempFlippedTiles();
 					alertify.error('Improper move')
 				}
@@ -714,7 +697,6 @@
 		}
 
 		function newGameOption () {
-			console.log('in new game')
 			if (!roll) {
 				$perfect_game.css("display","").addClass('animated fadeIn')
 			} else {
@@ -735,11 +717,8 @@
 		}
 
 		function startNewGame () {
-			console.log('in start new game')
 			unbindNewGameButton();
 			animation.animation.renderRemoveComponent($tile_container)
-			console.log(username)
-			console.log(user_exists)
 			game_selection.game_selection.init(username, user_exists)
 		}
 
@@ -783,7 +762,6 @@
 					}
 				})
 				if (flipped_tiles.length == 0) {
-					console.log("no tiles")
 					valid_move = false;
 					resolve()
 				} else {
@@ -792,7 +770,6 @@
 						flip_tiles: flipped_tiles
 					}
 					google_callback_resolve = resolve
-					console.log('about to call turn')
 					gapi.client.shut_the_box.turn(turn_object).execute(setTurnVariables)
 				}
 			})
@@ -800,7 +777,6 @@
 
 		function setTurnVariables (resp) {
 			if (resp) {
-				console.log('in resp')
 				if (resp.game_over) {
 					roll = resp.roll
 					game_over = true;
