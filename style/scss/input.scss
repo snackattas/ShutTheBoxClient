@@ -1,0 +1,397 @@
+$box-height: 750px;
+$box-width: 1130px;
+$d-width: 72px;
+$d-height: 120px;
+$header-font-size: 50px;
+$header-padding: 40px;
+$header-height: 15%;
+$d-font-size: 20px;
+$d-margin: 9px;
+$d-border-radius: .8em;
+$d-box-shadow1: .15em;
+$d-box-shadow2: .1em;
+$d-color: #A0785A;
+$d-shadow: #836953;
+$d-number-font-size: 36px;
+$rod-width: 1085px;
+$nano-box-width: 380px;
+$dice-indent: 200px;
+$dice-area: 200px;
+$dice-margin: 15px;
+$rod-height:15px;
+$rod-top: -30px;
+$game-over-top-margin: 60px;
+$game-over-height: 80px;
+
+@import 'nano-scroller';
+
+body {
+  font: 'Ubuntu', sans-serif;
+  color: #331A00;
+  background-color: #D1C2B6;
+}
+
+// This tilts the whole page, giving it a cool 3-d effect
+#tilt {
+  transform: perspective(1000px) rotateX(10deg);
+  height: 100%;
+  width: 100%;
+}
+
+// This is the felt background
+.box_border, .box_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: $box-height;
+  width: $box-width;
+}
+
+.box_background {
+  background: url("../../images/felt.jpg") repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  z-index: -100;
+}
+
+.box_border {
+  border: 20px brown;
+  border-style: groove;
+  box-shadow: 10px 10px 5px grey;
+  z-index: -99;
+}
+
+.header_block {
+  height: $header-height;
+  width: 100%;
+  display: inline-block;
+}
+
+.header_text_center {
+  text-align: center;
+  padding-top: $header-padding;
+  font-size: $header-font-size;
+}
+
+// game selection section
+.game_selection {
+  position: relative;
+  margin: 0 auto;
+  width: $box-width;
+}
+
+.remove_game_selection_padding {
+  padding: 0 !important;
+}
+.buttons_small {
+  -webkit-transform:scale(.7); /* Safari and Chrome */
+  -moz-transform:scale(.7); /* Firefox */
+  -ms-transform:scale(.7); /* IE 9 */
+  -o-transform:scale(.7); /* Opera */
+  transform:scale(.7);
+}
+
+.ui.button:disabled {
+  opacity: 1 !important;
+}
+
+// instructions for the width of the nano box
+.nano {
+  // width: $nano-box-width;
+  height: $nano-box-width;
+  display: inline-block;
+}
+
+.tile_container {
+  width: 100%;
+  text-align: center;
+  z-index: 3;
+}
+
+ .tile {
+   display: inline-flex;
+   font-size: $d-font-size;
+   width: $d-width;
+   height: $d-height;
+   margin: $d-margin;
+   position: relative;
+   -webkit-border-radius: $d-border-radius;
+   -moz-border-radius: $d-border-radius;
+   border-radius: $d-border-radius;
+   -moz-box-shadow: $d-box-shadow1 $d-box-shadow1 0 $d-box-shadow2 $d-shadow;
+   -webkit-box-shadow: $d-box-shadow1 $d-box-shadow1 0 $d-box-shadow2 $d-shadow;
+   box-shadow: $d-box-shadow1 $d-box-shadow1 0 $d-box-shadow2 $d-shadow;
+   background-color: $d-color;
+ }
+
+.tile_number {
+  margin: auto;
+  cursor: default;
+  font-size: $d-number-font-size;
+  font-family: 'Old Standard TT', serif;
+  -webkit-transform:scale(1,2.5); /* Safari and Chrome */
+  -moz-transform:scale(1,2.5); /* Firefox */
+  -ms-transform:scale(1,2.5); /* IE 9 */
+  -o-transform:scale(1,2.5); /* Opera */
+  transform:scale(1,2.5);
+}
+
+.rod {
+  position: relative;
+  height: $rod-height;
+  top: $rod-top;
+  margin: 0 auto;
+  background-color: silver;
+  border-radius: 1em;
+  z-index: -1;
+  width: $rod-width;
+}
+
+.dice_area {
+  height: $dice-area;
+}
+
+.dice {
+  left: $dice-indent !important;
+  margin-top: $dice-margin !important;
+  z-index: 5;
+}
+
+.game_over {
+  margin-top: $game-over-top-margin !important;
+  color: #851200;
+  font-size: $header-font-size;
+  height: $game-over-height;
+}
+
+//general ui
+.vertical_align {
+  vertical-align: middle;
+}
+
+.remove_padding {
+  padding: 0 !important;
+}
+
+.margin-left {
+  display: inline-flex;
+  margin-left: 10px;
+}
+
+@media (max-width: 1250px) {
+  .box_border, .box_background {
+    height: ($box-height*.8);
+    width: ($box-width*.8);
+  }
+  .header_block {
+    height: ($header-height*.8);
+  }
+  .header_text_center {
+    font-size: ($header-font-size*.8);
+    padding-top: ($header-padding*.8);
+  }
+  .game_selection {
+    width: ($box-width*.8);
+  }
+  .nano {
+    height: ($nano-box-width*.8);
+  }
+  .tile {
+    font-size: ($d-font-size*.8);
+    width: ($d-width*.8);
+    height: ($d-height*.8);
+    margin: ($d-margin*.8);
+  }
+  .tile_number {
+    font-size: ($d-number-font-size*.8);
+  }
+  .rod {
+    height: ($rod-height*.8);
+    top: ($rod-top*.8);
+    width: ($rod-width*.8);
+  }
+  .dice {
+    left: ($dice-indent*.65) !important;
+    margin-top: ($dice-margin*.65) !important;
+  }
+  .dice_area {
+    height: ($dice-area*.65);
+  }
+  .game_over {
+    margin-top: ($game-over-top-margin*.65) !important;
+    font-size: ($header-font-size*.65);
+    height: ($game-over-height*.65);
+  }
+}
+
+@media (max-width: 960px) {
+  .box_border, .box_background {
+    height: ($box-height*.65);
+    width: ($box-width*.65);
+  }
+  .header_block {
+    height: ($header-height*.65);
+  }
+  .header_text_center {
+    font-size: ($header-font-size*.65);
+    padding-top: ($header-padding*.65);
+  }
+  .game_selection {
+    width: ($box-width*.65);
+  }
+  .nano {
+    height: ($nano-box-width*.8);
+  }
+  .tile {
+    font-size: ($d-font-size*.65);
+    width: ($d-width*.65);
+    height: ($d-height*.65);
+    margin: ($d-margin*.65);
+  }
+  .tile_number {
+    font-size: ($d-number-font-size*.65);
+  }
+  .temp_flipped, .flipped {
+    top: -10px;
+  }
+  .rod {
+    height: ($rod-height*.65);
+    top: ($rod-top*.65);
+    width: ($rod-width*.65);
+  }
+  .dice {
+    left: ($dice-indent*.5) !important;
+    margin-top: ($dice-margin*.5) !important;
+    margin-left: 400px !important;
+  }
+  .dice_area {
+    height: ($dice-area*.5);
+  }
+  .game_over {
+    margin-top: ($game-over-top-margin*.5) !important;
+    font-size: ($header-font-size*.5);
+    height: ($game-over-height*.5);
+  }
+}
+
+@media (max-width: 800px) {
+  .box_border, .box_background {
+    height: ($box-height*.5);
+    width: ($box-width*.5);
+  }
+  .header_block {
+    height: ($header-height*.5);
+  }
+  .header_text_center {
+    font-size: ($header-font-size*.5);
+    padding-top: ($header-padding*.5);
+  }
+  .responsive_remove_padding {
+    padding: 0 !important;
+  }
+  .game_selection {
+    width: 100%;
+    // transform: scale(.75);
+  }
+
+  .buttons_small {
+    -webkit-transform:scale(.5); /* Safari and Chrome */
+    -moz-transform:scale(.5); /* Firefox */
+    -ms-transform:scale(.5); /* IE 9 */
+    -o-transform:scale(.5); /* Opera */
+    transform:scale(.5);
+  }
+  .nano {
+    width: 400px;
+    height: ($nano-box-width*.6);
+  }
+  .tile {
+    font-size: ($d-font-size*.5);
+    width: ($d-width*.5);
+    height: ($d-height*.5);
+    margin: ($d-margin*.5);
+  }
+  .tile_number {
+    font-size: ($d-number-font-size*.5);
+  }
+  .temp_flipped, .flipped {
+    top: -25px;
+  }
+  .rod {
+    height: ($rod-height*.5);
+    top: ($rod-top*.5);
+    width: ($rod-width*.5);
+  }
+  .dice {
+    left: ($dice-indent*.35) !important;
+    margin-top: ($dice-margin*.35) !important;
+    margin-left: 380px !important;
+  }
+  .dice_area {
+    height: ($dice-area*.35);
+  }
+  .game_over {
+    margin-top: ($game-over-top-margin*.35) !important;
+    font-size: ($header-font-size*.35);
+    height: ($game-over-height*.35);
+  }
+}
+
+
+@media (max-width: 600px) {
+  .box_border, .box_background {
+    height: ($box-height*.35);
+    width: ($box-width*.35);
+  }
+  .header_block {
+    height: ($header-height*.35);
+  }
+  .header_text_center {
+    font-size: ($header-font-size*.35);
+    padding-top: ($header-padding*.35);
+  }
+  .responsive_remove_padding {
+    padding: 0 !important;
+  }
+  .game_selection {
+    width: 100%;
+    // transform: scale(.75);
+  }
+  .nono {
+    // width: ($nano-box-width*.35);
+    height: ($nano-box-width*.35);
+  }
+  .tile {
+    font-size: ($d-font-size*.35);
+    width: ($d-width*.35);
+    height: ($d-height*.35);
+    margin: ($d-margin*.35);
+  }
+  .tile_number {
+    font-size: ($d-number-font-size*.35);
+  }
+  .temp_flipped, .flipped {
+    top: -40px;
+  }
+  .rod {
+    height: ($rod-height*.35);
+    top: ($rod-top*.35);
+    width: ($rod-width*.35);
+  }
+  .dice {
+    left: 40px !important;
+    margin-left: 300px !important;
+  }
+  .dice_area {
+    height: 40px;
+  }
+  .game_over {
+    margin-top: ($game-over-top-margin*.35) !important;
+    font-size: ($header-font-size*.35);
+    height: ($game-over-height*.35);
+  }
+}

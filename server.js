@@ -2,19 +2,10 @@ var express = require('express')
 var app = express()
 
 
-app.set('views', "./static/views")
+app.set('views', "./views/")
 app.set('view engine', 'pug')
-app.use(express.static('./static/'))
-// app.get('/', function (req, res) {
-//   var globalscope;
-//   function init() {
-//   	var client  = gapi.client.init({apiKey: "AIzaSyBMSjlGdNyRCxBN4CfZe8MkIGEbAsT3QA0"})
-//   	// gapi.client.load("shut_the_box", "v1", null, "https://zattas-game.appspot.com/_ah/api")
-//   	// globalscope=gapi.client;
-//   	globalscope=client
-//   }
-//   res.render("index")
-// })
+app.use(express.static('./'))
+
 app.get('/', function (req, res) {
   res.render('main')
 })
@@ -22,54 +13,36 @@ app.get('/', function (req, res) {
 app.get('/continue_game', function (req, res) {
   var games = req.param("games")
   var number_games = Object.keys(games).length
-  app.render("continueGame", {games: games, number_games: number_games, layout: false}, function(err, html) {
+  var render_object = {
+    games: games,
+    number_games: number_games,
+    layout: false
+  }
+  app.render("continueGame", render_object, function(err, html) {
     var response = {html: html}
     res.send(response)
   });
 });
 
 app.get('/new_game', function (req, res) {
-  console.log('in new game')
   app.render('newGame', {layout: false}, function(err, html) {
     var response = {html: html}
     res.send(response)
   })
 })
+
 app.get('/tiles', function (req, res) {
-  console.log('in tiles')
   var number_of_tiles = req.param("number_of_tiles")
-  if (number_of_tiles == 'NINE') {
-    app.render("9Tiles", {layout: false}, function(err, html) {
-      console.log('in 9')
-      console.log(html)
-      var response = {html: html}
-      res.send(response)
-    });
+  var render_object = {
+    number_of_tiles: number_of_tiles,
+    layout: false
   }
-  if (number_of_tiles == 'TWELVE') {
-    app.render("12Tiles", {layout: false}, function(err, html) {
-      console.log('in 12')
-      console.log(html)
-      var response = {html: html}
-      res.send(response)
-    });
-  }
+  app.render("tiles", render_object, function(err, html) {
+    var response = {html: html}
+    res.send(response)
+  });
 })
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })
-
-// app.post('/createuser', function (req, res) {
-//   console.log('in createuser')
-//   // console.log(req)
-//   res.render('index', { title: 'Hey', message: 'Hello there!' })
-// });
-
-// var globalscope;
-// function init() {
-// 	var client  = gapi.client.init({apiKey: "AIzaSyBMSjlGdNyRCxBN4CfZe8MkIGEbAsT3QA0"})
-// 	// gapi.client.load("shut_the_box", "v1", null, "https://zattas-game.appspot.com/_ah/api")
-// 	// globalscope=gapi.client;
-// 	globalscope=client
-// }

@@ -1,0 +1,407 @@
+/** initial setup **/
+.nano {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+
+.nano > .nano-content {
+  position: absolute;
+  overflow: scroll;
+  overflow-x: hidden;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+
+.nano > .nano-content:focus {
+  outline: thin dotted; }
+
+.nano > .nano-content::-webkit-scrollbar {
+  display: none; }
+
+.has-scrollbar > .nano-content::-webkit-scrollbar {
+  display: block; }
+
+.nano > .nano-pane {
+  background: rgba(0, 0, 0, 0.25);
+  position: absolute;
+  width: 10px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  visibility: hidden\9;
+  /* Target only IE7 and IE8 with this hack */
+  opacity: .01;
+  -webkit-transition: .2s;
+  -moz-transition: .2s;
+  -o-transition: .2s;
+  transition: .2s;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
+
+.nano > .nano-pane > .nano-slider {
+  background: #444;
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+  margin: 0 1px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px; }
+
+.nano:hover > .nano-pane, .nano-pane.active, .nano-pane.flashed {
+  visibility: visible\9;
+  /* Target only IE7 and IE8 with this hack */
+  opacity: 0.99; }
+
+.nano > .nano-content {
+  padding: 20px; }
+
+.nano > .nano-pane {
+  background: black; }
+
+.nano > .nano-pane > .nano-slider {
+  background: black; }
+
+body {
+  font: 'Ubuntu', sans-serif;
+  color: #331A00;
+  background-color: #D1C2B6; }
+
+#tilt {
+  transform: perspective(1000px) rotateX(10deg);
+  height: 100%;
+  width: 100%; }
+
+.box_border, .box_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: 750px;
+  width: 1130px; }
+
+.box_background {
+  background: url("../../images/felt.jpg") repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  z-index: -100; }
+
+.box_border {
+  border: 20px brown;
+  border-style: groove;
+  box-shadow: 10px 10px 5px grey;
+  z-index: -99; }
+
+.header_block {
+  height: 15%;
+  width: 100%;
+  display: inline-block; }
+
+.header_text_center {
+  text-align: center;
+  padding-top: 40px;
+  font-size: 50px; }
+
+.game_selection {
+  position: relative;
+  margin: 0 auto;
+  width: 1130px; }
+
+.remove_game_selection_padding {
+  padding: 0 !important; }
+
+.buttons_small {
+  -webkit-transform: scale(0.7);
+  /* Safari and Chrome */
+  -moz-transform: scale(0.7);
+  /* Firefox */
+  -ms-transform: scale(0.7);
+  /* IE 9 */
+  -o-transform: scale(0.7);
+  /* Opera */
+  transform: scale(0.7); }
+
+.ui.button:disabled {
+  opacity: 1 !important; }
+
+.nano {
+  height: 380px;
+  display: inline-block; }
+
+.tile_container {
+  width: 100%;
+  text-align: center;
+  z-index: 3; }
+
+.tile {
+  display: inline-flex;
+  font-size: 20px;
+  width: 72px;
+  height: 120px;
+  margin: 9px;
+  position: relative;
+  -webkit-border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  border-radius: 0.8em;
+  -moz-box-shadow: 0.15em 0.15em 0 0.1em #836953;
+  -webkit-box-shadow: 0.15em 0.15em 0 0.1em #836953;
+  box-shadow: 0.15em 0.15em 0 0.1em #836953;
+  background-color: #A0785A; }
+
+.tile_number {
+  margin: auto;
+  cursor: default;
+  font-size: 36px;
+  font-family: 'Old Standard TT', serif;
+  -webkit-transform: scale(1, 2.5);
+  /* Safari and Chrome */
+  -moz-transform: scale(1, 2.5);
+  /* Firefox */
+  -ms-transform: scale(1, 2.5);
+  /* IE 9 */
+  -o-transform: scale(1, 2.5);
+  /* Opera */
+  transform: scale(1, 2.5); }
+
+.rod {
+  position: relative;
+  height: 15px;
+  top: -30px;
+  margin: 0 auto;
+  background-color: silver;
+  border-radius: 1em;
+  z-index: -1;
+  width: 1085px; }
+
+.dice_area {
+  height: 200px; }
+
+.dice {
+  left: 200px !important;
+  margin-top: 15px !important;
+  z-index: 5; }
+
+.game_over {
+  margin-top: 60px !important;
+  color: #851200;
+  font-size: 50px;
+  height: 80px; }
+
+.vertical_align {
+  vertical-align: middle; }
+
+.remove_padding {
+  padding: 0 !important; }
+
+.margin-left {
+  display: inline-flex;
+  margin-left: 10px; }
+
+@media (max-width: 1250px) {
+  .box_border, .box_background {
+    height: 600px;
+    width: 904px; }
+
+  .header_block {
+    height: 12%; }
+
+  .header_text_center {
+    font-size: 40px;
+    padding-top: 32px; }
+
+  .game_selection {
+    width: 904px; }
+
+  .nano {
+    height: 304px; }
+
+  .tile {
+    font-size: 16px;
+    width: 57.6px;
+    height: 96px;
+    margin: 7.2px; }
+
+  .tile_number {
+    font-size: 28.8px; }
+
+  .rod {
+    height: 12px;
+    top: -24px;
+    width: 868px; }
+
+  .dice {
+    left: 130px !important;
+    margin-top: 9.75px !important; }
+
+  .dice_area {
+    height: 130px; }
+
+  .game_over {
+    margin-top: 39px !important;
+    font-size: 32.5px;
+    height: 52px; } }
+@media (max-width: 960px) {
+  .box_border, .box_background {
+    height: 487.5px;
+    width: 734.5px; }
+
+  .header_block {
+    height: 9.75%; }
+
+  .header_text_center {
+    font-size: 32.5px;
+    padding-top: 26px; }
+
+  .game_selection {
+    width: 734.5px; }
+
+  .nano {
+    height: 304px; }
+
+  .tile {
+    font-size: 13px;
+    width: 46.8px;
+    height: 78px;
+    margin: 5.85px; }
+
+  .tile_number {
+    font-size: 23.4px; }
+
+  .temp_flipped, .flipped {
+    top: -10px; }
+
+  .rod {
+    height: 9.75px;
+    top: -19.5px;
+    width: 705.25px; }
+
+  .dice {
+    left: 100px !important;
+    margin-top: 7.5px !important;
+    margin-left: 400px !important; }
+
+  .dice_area {
+    height: 100px; }
+
+  .game_over {
+    margin-top: 30px !important;
+    font-size: 25px;
+    height: 40px; } }
+@media (max-width: 800px) {
+  .box_border, .box_background {
+    height: 375px;
+    width: 565px; }
+
+  .header_block {
+    height: 7.5%; }
+
+  .header_text_center {
+    font-size: 25px;
+    padding-top: 20px; }
+
+  .responsive_remove_padding {
+    padding: 0 !important; }
+
+  .game_selection {
+    width: 100%; }
+
+  .buttons_small {
+    -webkit-transform: scale(0.5);
+    /* Safari and Chrome */
+    -moz-transform: scale(0.5);
+    /* Firefox */
+    -ms-transform: scale(0.5);
+    /* IE 9 */
+    -o-transform: scale(0.5);
+    /* Opera */
+    transform: scale(0.5); }
+
+  .nano {
+    width: 400px;
+    height: 228px; }
+
+  .tile {
+    font-size: 10px;
+    width: 36px;
+    height: 60px;
+    margin: 4.5px; }
+
+  .tile_number {
+    font-size: 18px; }
+
+  .temp_flipped, .flipped {
+    top: -25px; }
+
+  .rod {
+    height: 7.5px;
+    top: -15px;
+    width: 542.5px; }
+
+  .dice {
+    left: 70px !important;
+    margin-top: 5.25px !important;
+    margin-left: 380px !important; }
+
+  .dice_area {
+    height: 70px; }
+
+  .game_over {
+    margin-top: 21px !important;
+    font-size: 17.5px;
+    height: 28px; } }
+@media (max-width: 600px) {
+  .box_border, .box_background {
+    height: 262.5px;
+    width: 395.5px; }
+
+  .header_block {
+    height: 5.25%; }
+
+  .header_text_center {
+    font-size: 17.5px;
+    padding-top: 14px; }
+
+  .responsive_remove_padding {
+    padding: 0 !important; }
+
+  .game_selection {
+    width: 100%; }
+
+  .nono {
+    height: 133px; }
+
+  .tile {
+    font-size: 7px;
+    width: 25.2px;
+    height: 42px;
+    margin: 3.15px; }
+
+  .tile_number {
+    font-size: 12.6px; }
+
+  .temp_flipped, .flipped {
+    top: -40px; }
+
+  .rod {
+    height: 5.25px;
+    top: -10.5px;
+    width: 379.75px; }
+
+  .dice {
+    left: 40px !important;
+    margin-left: 300px !important; }
+
+  .dice_area {
+    height: 40px; }
+
+  .game_over {
+    margin-top: 21px !important;
+    font-size: 17.5px;
+    height: 28px; } }
+
+/*# sourceMappingURL=output.css.map */

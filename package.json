@@ -9,7 +9,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "alertifyjs": "^1.8.0",
+    "animate.css": "^3.5.2",
     "express": "^4.14.0",
-    "pug": "^2.0.0-beta6"
+    "jquery": "^3.1.1",
+    "jquery.transit": "^0.9.12",
+    "promise": "^7.0.4",
+    "pug": "^2.0.0-beta6",
+    "underscore": "^1.8.3",
+    "webpack": "^1.13.3"
+  },
+  "devDependencies": {
+    "expose-loader": "^0.7.1"
   }
 }

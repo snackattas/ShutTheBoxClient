@@ -1,0 +1,21 @@
+div(class="ui one column top aligned very relaxed stackable grid", id="tile_container", style="display: none")
+  div(class="ui one column center aligned")
+    if number_of_tiles == "NINE"
+      each val in [1,2,3,4,5,6,7,8,9]
+        div(class="tile")
+          div(class="tile_number", data-number=val) #{val}
+    if number_of_tiles == "TWELVE"
+      each val in [1,2,3,4,5,6,7,8,9,10,11,12]
+        div(class="tile")
+          div(class="tile_number", data-number=val) #{val}
+  div(class="rod")
+  div(class="ui one column grid center aligned game_over")
+    div(class="column center aligned", id="game_over_text", style="display:none;") Game&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Over
+    div(class="column center aligned", id="perfect_game", style="display:none;") Perfect&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Game!
+  div(class="ui one column grid center aligned dice_area")
+    div(class="column center aligned")
+      div(class="dice_holder")
+      div(class="dice_holder_2")
+  div(class="ui one column grid center aligned")
+    div(class="column center aligned")
+      button(class="ui button center aligned" id="roll_button") Roll
