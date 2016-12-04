@@ -3,17 +3,18 @@ var animation = require("./animation.js")
 var _ = require('underscore')
 var Promise = require('promise')
 
-function initWebsite () {
+function initWebsite (api_initialized) {
 	if (typeof window['gapi'] !== 'undefined') {
 			if ((gapi.client) && (gapi.client.shut_the_box)) {
 				username.init()
 				return
 			}
-			if ((gapi.client) && (!(gapi.client.shut_the_box))) {
+			if ((gapi.client) && (!(gapi.client.shut_the_box)) && (!(api_initialized))) {
 				gapi.client.load("shut_the_box", "v1", null, "https://zattas-game.appspot.com/_ah/api")
-				window.setTimeout(initWebsite, 100)
+				var api_initialized = true
+				window.setTimeout(initWebsite, 100, api_initialized)
 			} else {
-				window.setTimeout(initWebsite, 100)
+				window.setTimeout(initWebsite, 100, api_initialized)
 			}
 		} else {
 			window.setTimeout(initWebsite, 100)
@@ -21,6 +22,7 @@ function initWebsite () {
 }
 
 var username = (function(){
+	// initialize variables
 	var username = new String();
 	var user_exists = false;
 	var callback_resolve = new Function();
@@ -29,6 +31,7 @@ var username = (function(){
 	var $username_button = new Object();
 	var $game_selection_shell = new Object();
 
+	// entrypoint
 	function init () {
 		cacheDOM();
 		animation.animation.introAnimation($username_form);
@@ -43,15 +46,8 @@ var username = (function(){
 		$game_selection_shell = $body.find(".game_selection_shell")
 	}
 
-	function bindUsernameButton () {
-		$username_button.on("click", assignUsername);
-	}
-
-	function unbindUsernameButton () {
-		$username_button.unbind();
-	}
-
-	function assignUsername () {
+	// main action once user clicks sumbit button
+	function submitUser () {
 		var username_value = $username_field.val();
 		if (!username_value) {
 			return
@@ -65,19 +61,35 @@ var username = (function(){
 			.then(toGameSelectionPromise)
 	}
 
+	// creates user and checks if the user exists already
 	function createUserPromise () {
 		return new Promise(function (resolve, reject) {
 			var username_object = {username: username};
 			callback_resolve = resolve;
-			gapi.client.shut_the_box.create_user(username_object).execute(doesUserExist);
+			gapi.client.shut_the_box.create_user(username_object).execute(createUserPromiseCallback);
 		})
 	}
 
-	function doesUserExist (resp) {
+	// checks if user already exists
+	function createUserPromiseCallback (resp) {
 		if (resp.code === 409) {
 			user_exists = true;
 		}
 		callback_resolve();
+	}
+
+	// last promise to render the removal of the component and call the next component
+	function toGameSelectionPromise () {
+		return new Promise(function (resolve, reject) {
+			animation.animation.renderRemoveComponent($username_form)
+			game_selection.game_selection.init(username, user_exists)
+			resolve()
+		});
+	}
+
+	// binds and unbinds
+	function bindUsernameButton () {
+		$username_button.on("click", submitUser);
 	}
 
 	function unbindUsernameButtonPromise () {
@@ -87,13 +99,10 @@ var username = (function(){
 		});
 	}
 
-	function toGameSelectionPromise () {
-		return new Promise(function (resolve, reject) {
-			animation.animation.renderRemoveComponent($username_form)
-			game_selection.game_selection.init(username, user_exists)
-			resolve()
-		});
+	function unbindUsernameButton () {
+		$username_button.unbind();
 	}
+
 	return {
 		init: init
 	}

@@ -2,4 +2,4 @@ to run webpack:
 webpack js/main.js js/dist/client.js
 
 to run sass compile:
-sass static/style/scss/input.scss static/style/css/output.css
+sass style/scss/input.scss style/css/output.css

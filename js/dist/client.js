@@ -64,17 +64,18 @@
 	var _ = __webpack_require__(6)
 	var Promise = __webpack_require__(7)
 
-	function initWebsite () {
+	function initWebsite (api_initialized) {
 		if (typeof window['gapi'] !== 'undefined') {
 				if ((gapi.client) && (gapi.client.shut_the_box)) {
 					username.init()
 					return
 				}
-				if ((gapi.client) && (!(gapi.client.shut_the_box))) {
+				if ((gapi.client) && (!(gapi.client.shut_the_box)) && (!(api_initialized))) {
 					gapi.client.load("shut_the_box", "v1", null, "https://zattas-game.appspot.com/_ah/api")
-					window.setTimeout(initWebsite, 100)
+					var api_initialized = true
+					window.setTimeout(initWebsite, 100, api_initialized)
 				} else {
-					window.setTimeout(initWebsite, 100)
+					window.setTimeout(initWebsite, 100, api_initialized)
 				}
 			} else {
 				window.setTimeout(initWebsite, 100)
@@ -82,6 +83,7 @@
 	}
 
 	var username = (function(){
+		// initialize variables
 		var username = new String();
 		var user_exists = false;
 		var callback_resolve = new Function();
@@ -90,6 +92,7 @@
 		var $username_button = new Object();
 		var $game_selection_shell = new Object();
 
+		// entrypoint
 		function init () {
 			cacheDOM();
 			animation.animation.introAnimation($username_form);
@@ -104,15 +107,8 @@
 			$game_selection_shell = $body.find(".game_selection_shell")
 		}
 
-		function bindUsernameButton () {
-			$username_button.on("click", assignUsername);
-		}
-
-		function unbindUsernameButton () {
-			$username_button.unbind();
-		}
-
-		function assignUsername () {
+		// main action once user clicks sumbit button
+		function submitUser () {
 			var username_value = $username_field.val();
 			if (!username_value) {
 				return
@@ -126,19 +122,35 @@
 				.then(toGameSelectionPromise)
 		}
 
+		// creates user and checks if the user exists already
 		function createUserPromise () {
 			return new Promise(function (resolve, reject) {
 				var username_object = {username: username};
 				callback_resolve = resolve;
-				gapi.client.shut_the_box.create_user(username_object).execute(doesUserExist);
+				gapi.client.shut_the_box.create_user(username_object).execute(createUserPromiseCallback);
 			})
 		}
 
-		function doesUserExist (resp) {
+		// checks if user already exists
+		function createUserPromiseCallback (resp) {
 			if (resp.code === 409) {
 				user_exists = true;
 			}
 			callback_resolve();
+		}
+
+		// last promise to render the removal of the component and call the next component
+		function toGameSelectionPromise () {
+			return new Promise(function (resolve, reject) {
+				animation.animation.renderRemoveComponent($username_form)
+				game_selection.game_selection.init(username, user_exists)
+				resolve()
+			});
+		}
+
+		// binds and unbinds
+		function bindUsernameButton () {
+			$username_button.on("click", submitUser);
 		}
 
 		function unbindUsernameButtonPromise () {
@@ -148,13 +160,10 @@
 			});
 		}
 
-		function toGameSelectionPromise () {
-			return new Promise(function (resolve, reject) {
-				animation.animation.renderRemoveComponent($username_form)
-				game_selection.game_selection.init(username, user_exists)
-				resolve()
-			});
+		function unbindUsernameButton () {
+			$username_button.unbind();
 		}
+
 		return {
 			init: init
 		}
@@ -175,6 +184,9 @@
 	var Promise = __webpack_require__(7)
 
 	var game_selection = (function () {
+		//UP TO LINE 185 OCCURS BEFORE A GAME IS CHOSEN, THE REST OF THE FUNCTION
+		//DEALS WITH WHAT HAPPENS AFTER A GAME IS CHOSEN
+		//initialize variables
 		var username
 		var user_exists
 		var current_urlsafe_key
@@ -198,6 +210,7 @@
 		var $radio_buttons_collection
 		var $continue_game_button
 
+		// each time game_selection.init is called, the variables are re-initialized
 		function resetVars () {
 			username = new String();
 			user_exists = false;
@@ -222,15 +235,23 @@
 			$continue_game_button = new Object();
 		}
 
+		// main entrypoint for this object
 		function init (passed_in_username, passed_in_user_exists) {
 			resetVars()
 			username = passed_in_username
 			user_exists = passed_in_user_exists
 			cacheDOM();
-			renderGameSelection()
+			newOrContinueGameForm()
 		}
 
-		function newGameFormVariables () {
+		// This just grabs the body and game_selection_shell.  Individual DOM components
+		// will be cached later
+		function cacheDOM () {
+			var $body = $("body")
+			$game_selection_shell = $($body).find(".game_selection_shell")
+		}
+		//The other caching functions
+		function cacheNewGameFormDOM () {
 			$game_selection_form = $game_selection_shell.find("#game_selection_form")
 			$dice_operation = $game_selection_form.find("#dice_operation")
 			$number_of_tiles = $game_selection_form.find("#number_of_tiles")
@@ -240,59 +261,109 @@
 			$twelve_button = $number_of_tiles.find("#twelve_button")
 			$new_game_button = $game_selection_form.find("#new_game_button")
 		}
-
-		function continueGameFormVariables () {
+		function cacheContinueGameFormDOM() {
 			$radio_buttons_collection = $game_selection_form.find(".game_radio_button")
 			$continue_game_button = $game_selection_form.find("#continue_game_button")
 			continue_game_present = true
 		}
 
-		function activateToggleButtons () {
-			bindButtonPair($addition_button, $multiplication_button)
-			bindButtonPair($nine_button, $twelve_button)
-		}
-
-		function cacheDOM () {
-			var $body = $("body")
-			$game_selection_shell = $($body).find(".game_selection_shell")
-		}
-
-		function renderGameSelection () {
-			if (!user_exists) {
-				renderNewGameForm();
-			} else {
+		// This holds logic to determine if the New Game form or Continue game form should
+		// be rendered
+		function newOrContinueGameForm () {
+			console.log('in new or continue game form')
+			if (user_exists) {
+				console.log('user exists')
 				findGamesPromise()
-					.then( function () {
-						if (open_games.length > 0) {
-							renderContinueGameForm();
-						} else {
-							renderNewGameForm();
-						}
+				.then( function () {
+					if (open_games.length > 0) {
+						renderContinueGameForm();
+					} else {
+						renderNewGameForm();
+					}
 					})
+			} else {
+				console.log('user is new')
+				renderNewGameForm();
 			}
 		}
 
-		function renderNewGameForm () {
-			appendNewGameFormPromise().then(function () {
-				newGameFormVariables()
-				animation.animation.renderAddComponent($game_selection_form)
-				activateToggleButtons();
-				bindNewGameButton();
-			})
-		}
-
+		// These two render functions grab the forms from the server and initialize them
 		function renderContinueGameForm () {
-			appendContinueGameFormPromise()
+			ajaxContinueGameFormPromise()
 				.then( function () {
-					newGameFormVariables()
-					continueGameFormVariables()
-					animation.animation.renderAddComponent($game_selection_form)
-					activateToggleButtons()
+					cacheNewGameFormDOM()
+					cacheContinueGameFormDOM()
+					bindToggleButtons()
 					bindRadioButtons()
 					bindNewGameButton()
 					bindContinueGameButton()
+					animation.animation.renderAddComponent($game_selection_form)
 				})
 		}
+		function renderNewGameForm () {
+			ajaxNewGameFormPromise().then(function () {
+				cacheNewGameFormDOM()
+				bindToggleButtons();
+				bindNewGameButton();
+				animation.animation.renderAddComponent($game_selection_form)
+			})
+		}
+
+		//grabbing the forms from the server
+		function ajaxContinueGameFormPromise () {
+			return new Promise( function (resolve, reject) {
+				var game_selection_object = {games: open_games}
+				ajax_callback_resolve = resolve
+				$.ajax({
+					url: "/continue_game",
+					datatype: "json",
+					data: game_selection_object,
+					success: function (json) {
+						$($game_selection_shell).append(json.html)
+						ajax_callback_resolve()
+					}
+				});
+			})
+		}
+
+		function ajaxNewGameFormPromise () {
+			console.log('in new game retrieval')
+			return new Promise( function (resolve, reject) {
+				ajax_callback_resolve = resolve
+				$.ajax({
+					url: "/new_game",
+					success: function (json) {
+						console.log('in new gamesuccess')
+						$($game_selection_shell).append(json.html)
+						ajax_callback_resolve()
+					}
+				});
+			});
+		}
+
+		// checks if the user has any outstanding games in progress, and adds them to open_games array
+		function findGamesPromise () {
+			return new Promise(function (resolve, reject) {
+				var find_games_object = {
+					username:          username,
+					games_in_progress: true
+				};
+				google_callback_resolve = resolve;
+				gapi.client.shut_the_box.find_games(find_games_object).execute(findGamesPromiseCallback);
+			})
+		}
+		function findGamesPromiseCallback (resp) {
+			if (!resp.code) {
+				if (resp.games) {
+					_.each(resp.games, function (game) {
+						open_games.push(game)
+					});
+				}
+			};
+			google_callback_resolve()
+		}
+
+		//THIS STUFF EXECUTES ONCE A USER CLICKS PLAY IN EITHER THE NEW GAME OR CONTINUE GAME FORM\
 
 		function renderNewGame () {
 			dice_operation = $dice_operation.find(".active").data().value
@@ -310,17 +381,14 @@
 			})
 		}
 
-		function appendNewGameFormPromise () {
-			return new Promise( function (resolve, reject) {
-				ajax_callback_resolve = resolve
-				$.ajax({
-					url: "/new_game",
-					success: function (json) {
-						$($game_selection_shell).append(json.html)
-						ajax_callback_resolve()
-					}
-				});
-			});
+		function renderContinueGame ()  {
+			findSelectedGame();
+			unbindNewGameButton();
+			unbindToggleButtons();
+			unbindContinueGameButton();
+			unbindRadioButtons();
+			animation.animation.renderRemoveComponent($game_selection_form);
+			play.play.init(username, user_exists, current_urlsafe_key, dice_operation, number_of_tiles)
 		}
 
 		function createGamePromise () {
@@ -331,103 +399,17 @@
 					username:        username
 				}
 				google_callback_resolve = resolve
-				gapi.client.shut_the_box.new_game(new_game_object).execute(createNewGame)
+				gapi.client.shut_the_box.new_game(new_game_object).execute(createGamePromiseCallback)
 			});
 		}
-
-		function createNewGame (resp) {
+		function createGamePromiseCallback (resp) {
 			if (!resp.code) {
 				current_urlsafe_key = resp.urlsafe_key
 			}
 			google_callback_resolve();
 		}
 
-		function appendContinueGameFormPromise () {
-			return new Promise( function (resolve, reject) {
-				var game_selection_object = {games: open_games}
-				ajax_callback_resolve = resolve
-				$.ajax({
-					url: "/continue_game",
-					datatype: "json",
-					data: game_selection_object,
-					success: function (json) {
-						$($game_selection_shell).append(json.html)
-						ajax_callback_resolve()
-					}
-				});
-			})
-		}
-
-		function findGamesPromise () {
-			return new Promise(function (resolve, reject) {
-				var find_games_object = {
-					username:          username,
-					games_in_progress: true
-				};
-				google_callback_resolve = resolve;
-				gapi.client.shut_the_box.find_games(find_games_object).execute(addGames);
-			})
-		}
-
-		function addGames (resp) {
-			if (!resp.code) {
-				if (resp.games) {
-					_.each(resp.games, function (game) {
-						open_games.push(game)
-					});
-				}
-			};
-			google_callback_resolve()
-		}
-
-		function whichFormRender () {
-			if (open_games.length > 0) {
-				this.renderContinueGame()
-			} else {
-				this.renderNewGame()
-			}
-		}
-
-		function bindNewGameButton () {
-			$new_game_button.on("click", renderNewGame)
-		}
-
-		function bindContinueGameButton () {
-			$continue_game_button.on("click", renderContinueGame)
-		}
-
-		function unbindNewGameButton () {
-			$new_game_button.unbind();
-		}
-
-		function unbindToggleButtons () {
-			$addition_button.unbind();
-			$multiplication_button.unbind();
-			$nine_button.unbind();
-			$twelve_button.unbind();
-		}
-
-		function unbindContinueGameButton () {
-			$continue_game_button.unbind();
-		}
-
-		function unbindRadioButtons () {
-			_.each($radio_buttons_collection, function (radio_button) {
-				$(radio_button).unbind();
-			});
-		}
-
-		function renderContinueGame ()  {
-			setSelectedGameDetails();
-			animation.animation.renderRemoveComponent($game_selection_form);
-			unbindNewGameButton();
-			unbindToggleButtons();
-			unbindContinueGameButton();
-			unbindRadioButtons();
-			play.play.init(username, user_exists, current_urlsafe_key, dice_operation, number_of_tiles)
-		}
-
-		function setSelectedGameDetails () {
+		function findSelectedGame () {
 			var checked_radio = _.find($radio_buttons_collection, function (radio_button) {
 				if ($(radio_button).attr("checked")) {
 					return true
@@ -438,31 +420,60 @@
 			number_of_tiles = $(checked_radio).data("number_of_tiles")
 		}
 
+		//binding and unbinding
+		function bindToggleButtons () {
+			bindButtonPair($addition_button, $multiplication_button)
+			bindButtonPair($nine_button, $twelve_button)
+		}
 		function bindButtonPair (button1, button2) {
 			$(button1).on("click", function (e) {
-				e.preventDefault()
+				// e.preventDefault()
 				$(button1).addClass('active')
 				$(button2).removeClass('active')
 			});
 			$(button2).on("click", function (e) {
-				e.preventDefault()
+				// e.preventDefault()
 				$(button2).addClass("active")
 				$(button1).removeClass("active")
 			})
+		}
+		function unbindToggleButtons () {
+			$addition_button.unbind();
+			$multiplication_button.unbind();
+			$nine_button.unbind();
+			$twelve_button.unbind();
+		}
+
+		function bindNewGameButton () {
+			$new_game_button.on("click", renderNewGame)
+		}
+		function unbindNewGameButton () {
+			$new_game_button.unbind();
+		}
+
+		function bindContinueGameButton () {
+			$continue_game_button.on("click", renderContinueGame)
+		}
+		function unbindContinueGameButton () {
+			$continue_game_button.unbind();
 		}
 
 		function bindRadioButtons () {
 			_.each($($radio_buttons_collection), function (radio_button) {
 				var id = $(radio_button).attr("id")
-				$(radio_button).on("click", {radio_button: radio_button}, toggleRadio)
+				$(radio_button).on("click", {radio_button: radio_button}, bindRadioButtonsHelper)
 			})
 		}
-
-		function toggleRadio (event) {
+		function bindRadioButtonsHelper (event) {
 			_.each($($radio_buttons_collection), function (radio_button) {
 				$(radio_button).removeAttr("checked")
 			});
 			$(event.data.radio_button).attr("checked", "checked")
+		}
+		function unbindRadioButtons () {
+			_.each($radio_buttons_collection, function (radio_button) {
+				$(radio_button).unbind();
+			});
 		}
 		return {
 			init: init
@@ -483,7 +494,8 @@
 	var alertify = __webpack_require__(16)
 
 	var play  = (function (){
-		var username = new String()
+		// initialize variables
+		var username
 		var user_exists
 		var urlsafe_key
 		var dice_operation
@@ -528,10 +540,12 @@
 			ajax_callback_resolve = new Function();
 			google_callback_resolve = new Function();
 		}
+
 		function init (passed_in_username, passed_in_user_exists, passed_in_urlsafe_key,
 			passed_in_dice_operation, passed_in_number_of_tiles) {
-			// initialize passed in variables
+
 			resetVars();
+			// localize passed in variables
 			username = passed_in_username
 			user_exists = passed_in_user_exists
 			urlsafe_key = passed_in_urlsafe_key
@@ -540,13 +554,14 @@
 
 			cacheDOM()
 			gameStatePromise()
-			.then(appendTilesPromise)
+			.then(ajaxGameFormPromise)
 			.then(function () {
-				cacheGameplayDOM()
-				animation.animation.renderAddComponent($tile_container);
+				cacheGameFormDOM()
 				bindAllTiles();
-				setGameState();
+				flipAlreadyFlippedTiles();
+				firstRoll();
 				bindRollButton();
+				animation.animation.renderAddComponent($tile_container);
 			})
 		}
 
@@ -554,7 +569,7 @@
 			$gameplay_shell = $(".gameplay_shell")
 		}
 
-		function cacheGameplayDOM () {
+		function cacheGameFormDOM () {
 			$tile_container = $gameplay_shell.find("#tile_container")
 			$tiles = $tile_container.find(".tile")
 			$dice_holder = $tile_container.find(".dice_holder")
@@ -564,19 +579,15 @@
 			$perfect_game = $tile_container.find("#perfect_game")
 		}
 
+		// Either plays the first turn or gets the game state, flipping the already flipped tiles
 		function gameStatePromise () {
 			return new Promise(function (resolve, reject) {
 				google_callback_resolve = resolve
-				// call turn with only the urlsafe-key.  If it's a new game, it creates
-				// the first roll.  If it's a continued game, it will return the last roll
-				// and the active tiles in play, which we use to establish the continued game
-				// state
 				var turn_object = {urlsafe_key: urlsafe_key}
-				gapi.client.shut_the_box.turn(turn_object).execute(setGameVariables)
+				gapi.client.shut_the_box.turn(turn_object).execute(gameStatePromiseCallback)
 			})
 		}
-
-		function setGameVariables (resp) {
+		function gameStatePromiseCallback (resp) {
 			if (!resp.code) {
 				active_tiles = resp.active_tiles
 				roll = resp.roll
@@ -584,7 +595,7 @@
 			google_callback_resolve()
 		}
 
-		function appendTilesPromise () {
+		function ajaxGameFormPromise () {
 			var data_object = {number_of_tiles: number_of_tiles}
 			return new Promise( function (resolve, reject) {
 				ajax_callback_resolve = resolve
@@ -600,165 +611,48 @@
 			});
 		}
 
-		function bindAllTiles () {
+		function flipAlreadyFlippedTiles () {
 			_.each($tiles, function (tile) {
-				$(tile).on("click", {tile: tile}, tileAction)
+				var tile_number = getTileNumber(tile)
+				if (!(_.contains(active_tiles, tile_number))) {
+					$(tile).click();
+					unbindTile(tile)
+				}
 			})
 		}
 
-		function setGameState () {
-			_.each($tiles, function (tile) {
-				var tile_number = extractTileNumber(tile)
-				if (!(_.contains(active_tiles, tile_number))) {
-					$(tile).click();
-					flipTile(tile)
-				}
-			})
-			startDice($dice_holder, roll[0])
+		function firstRoll () {
+			setTimeout(function () {
+				$($dice_holder).dice().css("display", "none")
+			}, 1000)
+			setTimeout(function () {
+				$($dice_holder).css("display","")
+				$($dice_holder).dice("roll", roll[0])
+			}, 1500)
 			if (roll.length == 2) {
-				startDice($dice_holder_2, roll[1])
+				setTimeout(function () {
+					$($dice_holder_2).dice().css("display", "none")
+				}, 1000)
+				setTimeout(function () {
+					$($dice_holder_2).css("display","")
+					$($dice_holder_2).dice("roll", roll[1])
+				}, 1500)
 			} else {
 				removeSecondDice()
 			}
 		}
 
-		function flipTile (tile) {
-			$(tile).addClass("flipped").removeClass("temp_flipped")
-			unbindTile(tile)
-		}
-
-		function startDice (dice, roll) {
-			setTimeout(createFirstDice, 1000, dice)
-			setTimeout(rollFirstDice, 1500, dice, roll)
-		}
-
-		function createFirstDice (dice) {
-			$(dice).dice().css("display", "none")
-		}
-
-		function rollFirstDice (dice,roll) {
-			$(dice).css("display", "")
-			$(dice).dice('roll', roll);
-		}
-
-		function removeSecondDice () {
-			$($dice_holder_2).remove();
-			second_dice_exists = false;
-		}
-
-		function tileAction (event) {
-			if ($(event.data.tile).hasClass("temp_flipped")) {
-				// unflip the tile
-				$(event.data.tile).css("transform","")
-				$(event.data.tile).removeClass("temp_flipped")
-			} else {
-				// flip the tile
-				$(event.data.tile).transition({
-					y: '90px',
-					perspective: '300px',
-					rotate3d: '1,0,0,-140deg'
-				})
-				$(event.data.tile).addClass("temp_flipped")
-			}
-		}
-
-		function bindRollButton () {
-			$button.on("click", rollAction)
-		}
-		function unbindRollButton () {
-			$button.unbind();
-		}
-
-		function rollAction () {
-			checkTurn()
+		function evaluateTurn () {
+			submitTurnPromise()
 				.then(renderTurn)
 		}
 
-		function extractTileNumber (tile) {
-			return String($(tile).find(".tile_number").data("number"))
-		}
-
-		function renderTurn () {
-			if (game_over == true) {
-				rollDice();
-				unbindRollButton();
-				unbindTiles();
-				newGameOption();
-			} else {
-				if (valid_move) {
-					valid_move = false;
-					convertTempFlippedTiles();
-					rollDice();
-				} else {
-					resetTempFlippedTiles();
-					alertify.error('Improper move')
-				}
-			}
-		}
-
-		function newGameOption () {
-			if (!roll) {
-				$perfect_game.css("display","").addClass('animated fadeIn')
-			} else {
-				$game_over_message.css("display","").addClass('animated fadeIn')
-			}
-			var new_game_button = "<button class='ui button center aligned' id='play_again_button'>Play Again?</button>"
-			$($button).replaceWith(new_game_button)
-			$button = $tile_container.find("#play_again_button")
-			bindNewGameButton();
-		}
-
-		function bindNewGameButton () {
-			$button.on("click", startNewGame)
-		}
-
-		function unbindNewGameButton () {
-			$button.unbind()
-		}
-
-		function startNewGame () {
-			unbindNewGameButton();
-			animation.animation.renderRemoveComponent($tile_container)
-			game_selection.game_selection.init(username, user_exists)
-		}
-
-		function resetTempFlippedTiles () {
-			_.each($tiles, function (tile) {
-				if ($(tile).hasClass("temp_flipped")) {
-					$(tile).click();
-				}
-			})
-		}
-
-		function rollDice () {
-			if (!roll) {
-				return
-			}
-			if (roll.length == 2) {
-				$dice_holder.dice('roll', roll[0])
-				$dice_holder_2.dice('roll', roll[1])
-			} else {
-				if (second_dice_exists) {
-					removeSecondDice();
-				}
-				$dice_holder.dice('roll', roll[0])
-				}
-		}
-
-		function convertTempFlippedTiles () {
-			_.each($tiles, function (tile) {
-				if ($(tile).hasClass("temp_flipped")) {
-					flipTile(tile)
-				}
-			})
-		}
-
-		function checkTurn () {
+		function submitTurnPromise () {
 			return new Promise( function(resolve, reject) {
 				var flipped_tiles = new Array();
 				_.each($tiles, function (tile) {
 					if ($(tile).hasClass("temp_flipped")) {
-						flipped_tiles.push(extractTileNumber(tile))
+						flipped_tiles.push(getTileNumber(tile))
 					}
 				})
 				if (flipped_tiles.length == 0) {
@@ -770,12 +664,11 @@
 						flip_tiles: flipped_tiles
 					}
 					google_callback_resolve = resolve
-					gapi.client.shut_the_box.turn(turn_object).execute(setTurnVariables)
+					gapi.client.shut_the_box.turn(turn_object).execute(submitTurnPromiseCallback)
 				}
 			})
 		}
-
-		function setTurnVariables (resp) {
+		function submitTurnPromiseCallback (resp) {
 			if (resp) {
 				if (resp.game_over) {
 					roll = resp.roll
@@ -792,15 +685,132 @@
 			}
 		}
 
-		function unbindTile (tile) {
-			$(tile).unbind();
+		function renderTurn () {
+			if (game_over == true) {
+				rollDice();
+				unbindRollButton();
+				unbindTiles();
+				renderGameOver();
+			} else {
+				if (valid_move) {
+					valid_move = false;
+					flipTiles();
+					rollDice();
+				} else {
+					resetTiles();
+					alertify.error('Improper move')
+				}
+			}
 		}
 
+		function rollDice () {
+			if (!roll) {
+				return
+			}
+			$dice_holder.dice('roll', roll[0])
+			if (roll.length == 2) {
+				$dice_holder_2.dice('roll', roll[1])
+			} else {
+				if (second_dice_exists) {
+					removeSecondDice();
+				}
+				}
+		}
+
+		// the next three functions are tile manipulation
+		function flipTiles () {
+			_.each($tiles, function (tile) {
+				if ($(tile).hasClass("temp_flipped")) {
+					unbindTile(tile)
+				}
+			})
+		}
+		function resetTiles () {
+			_.each($tiles, function (tile) {
+				if ($(tile).hasClass("temp_flipped")) {
+					$(tile).click();
+				}
+			})
+		}
+
+		function flipAction (event) {
+			if ($(event.data.tile).hasClass("temp_flipped")) {
+				// unflip the tile
+				$(event.data.tile).css("transform","")
+				$(event.data.tile).removeClass("temp_flipped")
+			} else {
+				// flip the tile
+				$(event.data.tile).transition({
+					y: '90px',
+					perspective: '300px',
+					rotate3d: '1,0,0,-140deg'
+				})
+				$(event.data.tile).addClass("temp_flipped")
+			}
+		}
+
+		// These two functions operate after the game is over
+		function renderGameOver () {
+			//this is the Game over or perfect game message
+			if (!roll) {
+				$perfect_game.css("display","").addClass('animated fadeIn')
+			} else {
+				$game_over_message.css("display","").addClass('animated fadeIn')
+			}
+			// subbing out the roll button with a play again button
+			var new_game_button = "<button class='ui button center aligned' id='play_again_button'>Play Again?</button>"
+			$($button).replaceWith(new_game_button)
+			$button = $tile_container.find("#play_again_button")
+			bindPlayAgainButton();
+		}
+
+		function startNewGame () {
+			unbindPlayAgainButton();
+			animation.animation.renderRemoveComponent($tile_container)
+			game_selection.game_selection.init(username, user_exists)
+		}
+
+
+		// this is just a simple utility to remove the second dice when tiles 7 and
+		// up have all been flipped
+		function removeSecondDice () {
+			$($dice_holder_2).remove();
+			second_dice_exists = false;
+		}
+		// Utility that gets the tile number from a tile passed in
+		function getTileNumber (tile) {
+			return String($(tile).find(".tile_number").data("number"))
+		}
+		//binding and unbindings
+		function bindAllTiles () {
+			_.each($tiles, function (tile) {
+				$(tile).on("click", {tile: tile}, flipAction)
+			})
+		}
+		function unbindTile (tile) {
+			$(tile).addClass("flipped").removeClass("temp_flipped")
+			$(tile).unbind();
+		}
 		function unbindTiles () {
 			_.each($tiles, function (tile) {
 				$(tile).unbind();
 			})
 		}
+
+		function bindRollButton () {
+			$button.on("click", evaluateTurn)
+		}
+		function unbindRollButton () {
+			$button.unbind();
+		}
+
+		function bindPlayAgainButton () {
+			$button.on("click", startNewGame)
+		}
+		function unbindPlayAgainButton () {
+			$button.unbind()
+		}
+
 		return {
 			init: init
 		}
