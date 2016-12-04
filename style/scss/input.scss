@@ -99,6 +99,11 @@ p {
   width: $box-width;
 }
 
+label {
+  font-size: 20px;
+  font-weight: 700; 
+}
+
 .remove_game_selection_padding {
   padding: 0 !important;
 }

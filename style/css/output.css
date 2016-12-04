@@ -124,6 +124,10 @@ p {
   margin: 0 auto;
   width: 1130px; }
 
+label {
+  font-size: 20px;
+  font-weight: 700; }
+
 .remove_game_selection_padding {
   padding: 0 !important; }
 
