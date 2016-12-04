@@ -90,9 +90,7 @@ var game_selection = (function () {
 	// This holds logic to determine if the New Game form or Continue game form should
 	// be rendered
 	function newOrContinueGameForm () {
-		console.log('in new or continue game form')
 		if (user_exists) {
-			console.log('user exists')
 			findGamesPromise()
 			.then( function () {
 				if (open_games.length > 0) {
@@ -102,7 +100,6 @@ var game_selection = (function () {
 				}
 				})
 		} else {
-			console.log('user is new')
 			renderNewGameForm();
 		}
 	}
@@ -147,13 +144,11 @@ var game_selection = (function () {
 	}
 
 	function ajaxNewGameFormPromise () {
-		console.log('in new game retrieval')
 		return new Promise( function (resolve, reject) {
 			ajax_callback_resolve = resolve
 			$.ajax({
 				url: "/new_game",
 				success: function (json) {
-					console.log('in new gamesuccess')
 					$($game_selection_shell).append(json.html)
 					ajax_callback_resolve()
 				}

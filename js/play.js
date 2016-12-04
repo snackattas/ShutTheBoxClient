@@ -245,8 +245,6 @@ var play  = (function (){
 	}
 
 	function flipAction (event) {
-		console.log('in flip Action')
-		console.log(event)
 		if ($(event.data.tile).hasClass("temp_flipped")) {
 			// unflip the tile
 			$(event.data.tile).css("transform","")
@@ -297,8 +295,6 @@ var play  = (function (){
 	//binding and unbindings
 	function bindAllTiles () {
 		_.each($tiles, function (tile) {
-			console.log('bind all tiles')
-			console.log(tile)
 			$(tile).on("click", {tile: tile}, flipAction)
 		})
 	}

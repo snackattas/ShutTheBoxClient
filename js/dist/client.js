@@ -270,9 +270,7 @@
 		// This holds logic to determine if the New Game form or Continue game form should
 		// be rendered
 		function newOrContinueGameForm () {
-			console.log('in new or continue game form')
 			if (user_exists) {
-				console.log('user exists')
 				findGamesPromise()
 				.then( function () {
 					if (open_games.length > 0) {
@@ -282,7 +280,6 @@
 					}
 					})
 			} else {
-				console.log('user is new')
 				renderNewGameForm();
 			}
 		}
@@ -327,13 +324,11 @@
 		}
 
 		function ajaxNewGameFormPromise () {
-			console.log('in new game retrieval')
 			return new Promise( function (resolve, reject) {
 				ajax_callback_resolve = resolve
 				$.ajax({
 					url: "/new_game",
 					success: function (json) {
-						console.log('in new gamesuccess')
 						$($game_selection_shell).append(json.html)
 						ajax_callback_resolve()
 					}
@@ -734,8 +729,6 @@
 		}
 
 		function flipAction (event) {
-			console.log('in flip Action')
-			console.log(event)
 			if ($(event.data.tile).hasClass("temp_flipped")) {
 				// unflip the tile
 				$(event.data.tile).css("transform","")
@@ -786,8 +779,6 @@
 		//binding and unbindings
 		function bindAllTiles () {
 			_.each($tiles, function (tile) {
-				console.log('bind all tiles')
-				console.log(tile)
 				$(tile).on("click", {tile: tile}, flipAction)
 			})
 		}
