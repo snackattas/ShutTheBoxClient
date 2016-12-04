@@ -11,11 +11,14 @@
   "dependencies": {
     "alertifyjs": "^1.8.0",
     "animate.css": "^3.5.2",
+    "esprima": "^3.1.2",
     "express": "^4.14.0",
+    "gulp": "^3.9.1",
     "jquery": "^3.1.1",
     "jquery.transit": "^0.9.12",
     "promise": "^7.0.4",
     "pug": "^2.0.0-beta6",
+    "semantic-ui": "^2.2.6",
     "socket.io": "^1.7.1",
     "underscore": "^1.8.3",
     "webpack": "^1.13.3"

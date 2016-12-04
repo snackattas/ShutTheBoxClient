@@ -3,7 +3,7 @@ html
   head
     title() Shut The Box
     link(rel="icon", href="../images/dice_favicon.png")
-    link(rel="stylesheet",href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css")
+    link(rel="stylesheet",href="../node_modules/semantic-ui/dist/semantic.min.css")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Ubuntu")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Old+Standard+TT")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css")
@@ -14,7 +14,12 @@ html
       div(class="box_border")
       div(class="box_background")
       div(class="header_block")
-        h1(class="header_text_center") Shut The Box
+      div(class="ui equal width grid header_width")
+        div(class="column")
+        div(class="column center aligned")
+          h1(class="header_text_center") Shut The Box
+        div(class="column center aligned vertical_align_button")
+          button(class="ui button push_left", onclick="$('.ui.modal').modal('show');") About
       div(class="ui centered inline active loader")
       form(action="javascript:void(0)", id="username_form", style="display:none;")
         div(class="ui one column centered grid")
@@ -28,8 +33,51 @@ html
               button(class="ui button", id="username_button", type="submit") Enter
       div(class="game_selection_shell")
       div(class="gameplay_shell")
+    div(class="ui small modal")
+      div(class="header ui center aligned segment")
+        h2() About Shut The Box
+      div(class="description")
+        p()
+        p() The rules of Shut The Box can be explained&nbsp;
+          a(href="https://en.wikipedia.org/wiki/Shut_the_Box#Rules", target="_blank") here.
+        p() In this version, players have the option to:
+          ul()
+            li() Play with 12 tiles instead of the traditional 9
+            li() Play using the product of the dice roll instead of the sum
+            li() Game states are saved via username, so if a game is unfinished it can be continued by entering the same name
+        p()
+        p() This version of Shut The Box was create by <a href="https://github.com/snackattas", target="_blank">Zach Attas</a>.
+          |&nbsp;If you really like it, feel free to <a href="https://cash.me/$zattas", target="_blank">donate here</a>.
+        p()
+        p() Code repos:
+          ul()
+            li() <a href="https://github.com/snackattas/ShutTheBoxClient", target="_blank"> Client code </a>
+            li() <a href="https://github.com/snackattas/ShutTheBox", target="_blank"> Server code </a>
+        p()
+        p() Client Tech Used:
+          ul()
+            li() <a href="https://nodejs.org/en/", target="_blank">node.js</a>
+            li() <a href="http://expressjs.com/", target="_blank">Express</a>
+            li() <a href="https://jquery.com/", target="_blank>jQuery</a>
+            li() <a href="https://www.promisejs.org/", target="_blank">Promises</a>
+            li() <a href="http://semantic-ui.com/", target="_blank">Semantic-UI</a>
+            li() <a href="https://daneden.github.io/animate.css/", target="_blank">Animate.css</a>
+            li() <a href="http://ricostacruz.com/jquery.transit/", target="_blank">Transit</a>
+            li() <a href="https://github.com/lazygyu/jqueryDice", target="_blank">lazyguy's jqueryDice</a>
+            li() <a href="http://alertifyjs.com/", target="_blank">AlertifyJS</a>
+            li() <a href="https://jamesflorentino.github.io/nanoScrollerJS/", target="_blank">nanoScroller.js</a>
+            li() <a href="https://webpack.github.io/", target="_blank">Webpack</a>
+            li() <a href="http://sass-lang.com/", target="_blank">Sass</a>
+        p() Server Tech Used:
+          ul()
+            li() <a href="https://cloud.google.com/endpoints/", target="_blank">Google Cloud Endpoints</a>
+            li() Python
+        p()
+        p()
 
+      div(class="actions")
     script(type="text/javascript", src="../node_modules/jquery/dist/jquery.min.js")
+    script(type="text/javascript", src="../node_modules/semantic-ui/dist/semantic.min.js")
     script(type="text/javascript", src="../node_modules/jquery.transit/jquery.transit.js")
     script(type="text/javascript", src="../js/dist/jquery.dice.js")
     script(type="text/javascript", src="../js/dist/client.js")

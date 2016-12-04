@@ -4,7 +4,7 @@ $d-width: 72px;
 $d-height: 120px;
 $header-font-size: 50px;
 $header-padding: 40px;
-$header-height: 15%;
+$header-height: 4%;
 $d-font-size: 20px;
 $d-margin: 9px;
 $d-border-radius: .8em;
@@ -36,6 +36,10 @@ body {
   transform: perspective(1000px) rotateX(10deg);
   height: 100%;
   width: 100%;
+}
+
+p {
+  margin: 10px;
 }
 
 // This is the felt background
@@ -71,12 +75,23 @@ body {
   display: inline-block;
 }
 
+.header_width {
+  margin: 0 auto !important;
+  width: $box-width
+}
+
 .header_text_center {
   text-align: center;
-  padding-top: $header-padding;
+  // padding-top: $header-padding;
   font-size: $header-font-size;
 }
 
+.vertical_align_button{
+  vertical-align: middle;
+}
+.push_left{
+  margin-left: -60px;
+}
 // game selection section
 .game_selection {
   position: relative;
@@ -190,9 +205,12 @@ body {
   .header_block {
     height: ($header-height*.8);
   }
+  .header_width {
+    width: ($box-width*.8)
+  }
   .header_text_center {
     font-size: ($header-font-size*.8);
-    padding-top: ($header-padding*.8);
+    // padding-top: ($header-padding*.8);
   }
   .game_selection {
     width: ($box-width*.8);
@@ -236,9 +254,12 @@ body {
   .header_block {
     height: ($header-height*.65);
   }
+  .header_width {
+    width: ($box-width*.65)
+  }
   .header_text_center {
     font-size: ($header-font-size*.65);
-    padding-top: ($header-padding*.65);
+    // padding-top: ($header-padding*.65);
   }
   .game_selection {
     width: ($box-width*.65);
@@ -286,9 +307,12 @@ body {
   .header_block {
     height: ($header-height*.5);
   }
+  .header_width {
+    width: ($box-width*.5)
+  }
   .header_text_center {
     font-size: ($header-font-size*.5);
-    padding-top: ($header-padding*.5);
+    // padding-top: ($header-padding*.5);
   }
   .responsive_remove_padding {
     padding: 0 !important;
@@ -350,9 +374,12 @@ body {
   .header_block {
     height: ($header-height*.35);
   }
+  .header_width {
+    width: ($box-width*.35)
+  }
   .header_text_center {
     font-size: ($header-font-size*.35);
-    padding-top: ($header-padding*.35);
+    // padding-top: ($header-padding*.35);
   }
   .responsive_remove_padding {
     padding: 0 !important;
