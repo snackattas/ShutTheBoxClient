@@ -19,7 +19,7 @@ html
         div(class="column center aligned")
           h1(class="header_text_center") Shut The Box
         div(class="column center aligned vertical_align_button")
-          button(class="ui button push_left", onclick="$('.ui.modal').modal('show');") About
+          button(class="ui button push_left", id="about_button") About
       div(class="ui centered inline active loader")
       form(action="javascript:void(0)", id="username_form", style="display:none;")
         div(class="ui one column centered grid")
@@ -34,8 +34,7 @@ html
       div(class="game_selection_shell")
       div(class="gameplay_shell")
     div(class="ui small modal")
-      div(class="header ui center aligned segment")
-        h2() About Shut The Box
+      div(class="header") About Shut The Box
       div(class="description")
         p()
         p() The rules of Shut The Box can be explained&nbsp;
